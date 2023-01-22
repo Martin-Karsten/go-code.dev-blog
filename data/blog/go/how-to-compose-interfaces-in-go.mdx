@@ -1,0 +1,159 @@
+---
+title: How to compose interfaces in go
+date: '2023-01-22'
+tags: ['go', 'interfaces']
+draft: false
+summary: 'ADD LATER'
+---
+
+[Composition over inhertiance](https://en.wikipedia.org/wiki/Composition_over_inheritance) is a key concept in the go programming language that is often missused. Let's look at the correct way on how to compose interfaces in go.
+
+## Using no Composition
+
+In the following example we are going to use the [io.Reader](https://go.dev/tour/methods/21) interface.
+
+In the `main` function we define a slice of bytes. We also create a new reader which accepts these bytes and pass it our `hashAndBroadcast`, which we are going to define next.
+
+```go
+package main
+
+import (
+	"bytes"
+	"crypto/sha1"
+	"encoding/hex"
+	"fmt"
+	"io"
+	"io/ioutil"
+)
+
+func main() {
+	payload := []byte("example payload")
+	hashAndBroadcast(bytes.NewReader(payload))
+}
+```
+
+In our `hashAndBroadcast` function we simply read the given reader input, compute the sum of the returned bytes and call `broadcast`.
+
+```go
+func hashAndBroadcast(r io.Reader) error {
+	b, err := ioutil.ReadAll(r)
+
+	if err != nil {
+		return err
+	}
+
+	hash := sha1.Sum(b)
+
+	fmt.Println(hex.EncodeToString(hash[:]))
+
+	return broadcast(r)
+}
+```
+
+In our `broadcast` function we take take a reader as well. But here we simply print the string representation of the returned bytes.
+
+```go
+func broadcast(r io.Reader) error {
+	b, err := ioutil.ReadAll(r)
+
+	if err != nil {
+		return err
+	}
+
+	fmt.Println("str representation of the bytes: ", string(b))
+
+	return nil
+}
+```
+
+If we run `go run main.go` now we will get the following result
+
+```shell
+6e1f87992256ae87d9086abdf99c2bd3421df5c1
+str representation of the bytes:
+```
+
+We can see that `fmt.Println("str representation of the bytes: ", string(b))` is missing the `string(b)` part even tough we passed the in `hashAndBroadcast` created Reader r to the `broadcast` function.
+To fix that we are going to use composition
+
+## Using composition
+
+First we create a `hashReader` struct and a constructor. This hashReader struct will implement `bytes.Reader`, which means we don't have to create a new read function
+
+```go
+type hashReader struct {
+  *bytes.Reader
+  buf *bytes.Buffer
+}
+
+func NewHashReader(b []byte) *hashReader {
+  return &hashReader{
+    Reader: bytes.NewReader(b),
+    buf:    bytes.NewBuffer(b),
+  }
+}
+```
+
+Now we also have to change the main function and pass a hashReader instead of a bytes.NewReader
+
+```go
+func main() {
+	payload := []byte("example payload")
+	hashAndBroadcast(NewHashReader(payload))
+}
+```
+
+Because we are not passing a `hashReader` we don't have to read in our `hashAndBroadcast` functiona anymore and can simply call create our own hash function
+
+```go
+func (h *hashReader) hash() string {
+	return hex.EncodeToString((h.buf.Bytes()))
+}
+
+func hashAndBroadcast(r io.Reader) error {
+	hash := r.(*hashReader).hash() //type cast reader to hashReader
+	fmt.Println(hash)
+
+	return broadcast(r)
+}
+```
+
+If we now run `go run main.go` we get the correct output
+
+```shell
+6578616d706c65207061796c6f6164
+str representation of the bytes:  example payload
+```
+
+How can we simplify this even more and avoid type casting in `hashAndBroadcast`? We add a `HashReader` interface.
+
+## Using composition with an interface
+
+The `HashReader` interface itself takes a Reader and a hash function.
+Now we can differentiate between a reader and hashReader
+
+```go
+type HashReader interface {
+	io.Reader
+	hash() string
+}
+
+func hashAndBroadcast(r HashReader) error { //takes a HashReader
+	hash := r.hash() // type casting is not necessary anymore
+	fmt.Println(hash)
+
+	return broadcast(r)
+}
+
+func broadcast(r io.Reader) error { // takes a normal reader
+	b, err := ioutil.ReadAll(r)
+
+	if err != nil {
+		return err
+	}
+
+	fmt.Println("str representation of the bytes: ", string(b))
+
+	return nil
+}
+```
