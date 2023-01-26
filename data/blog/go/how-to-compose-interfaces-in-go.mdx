@@ -74,7 +74,8 @@ str representation of the bytes:
 ```
 
 We can see that `fmt.Println("str representation of the bytes: ", string(b))` is missing the `string(b)` part even tough we passed the in `hashAndBroadcast` created Reader r to the `broadcast` function.
-To fix that we are going to use composition
+Why is that? When we call `b, err := ioutil.ReadAll(r)` we deplete the reader. That means when we are calling `broadcast(r)` we are passing a depleted reder.
+To fix that we are going to use composition.
 
 ## Using composition
 
