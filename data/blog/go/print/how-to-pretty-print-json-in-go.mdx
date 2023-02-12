@@ -1,0 +1,101 @@
+---
+title: How to pretty print JSON in go (golang)
+date: '2023-02-12'
+tags: ['go', 'print', 'struct']
+draft: false
+summary: 'How to print a struct go (golang)'
+---
+
+<Image
+  alt="How to pretty print JSON in go (golang)"
+  src="/static/images/go/Go-Logo_Aqua.png"
+  width={256}
+  height={128}
+  style={{ margin: '0 auto' }}
+/>
+
+## Use the json.Indent method to print JSON in go (golang)
+
+**Use json.Indent method**
+
+### Code example on how to pretty print JSON in go (golang)
+
+```go
+func handleRequest(w http.ResponseWriter, req *http.Request) {
+    body := App.MustReadBody(req, w)  // get the respone body
+    if body == nil {
+        return
+    }
+
+    var prettyJSON bytes.Buffer
+    error := json.Indent(&prettyJSON, body, "", "\t")
+    if error != nil {
+        fmt.Println("JSON parse error: ", error)
+        App.BadRequest(w) // handle errors
+        return
+    }
+
+    fmt.Println(prettyJSON.String())
+}
+```
+
+In the code above we can see that all we have to do is to call [json.Indent](https://pkg.go.dev/encoding/json#Indent) on our object.
+Printing this will give us the following result:
+
+```
+{
+        "Id": 1,
+        "Data": [
+                "Cat",
+                "Dog",
+                "Horse"
+        ]
+}
+```
+
+## Use the json.MarshalIndent method to print JSON in go (golang)
+
+**Use json.MarshalIndent method**
+
+### Code example on how to pretty print JSON using json.MarshalIndent in go (golang)
+
+Let's change the previous example to use [json.MarshalIndent](https://pkg.go.dev/encoding/json#MarshalIndent) instead of json.Indent.
+
+```go
+func handleRequest(w http.ResponseWriter, req *http.Request) {
+    body := App.MustReadBody(req, w)  // get the respone body
+    if body == nil {
+        return
+    }
+
+    prettyJSON, error := json.MarshalIndent(myStruct, "", "\t")
+    if error != nil {
+        fmt.Println("JSON parse error: ", error)
+        App.BadRequest(w) // handle errors
+        return
+    }
+
+    fmt.Println(string(prettyJSON))
+}
+```
+
+Printing the variable we get the same result as before:
+
+```
+{
+        "Id": 1,
+        "Data": [
+                "Cat",
+                "Dog",
+                "Horse"
+        ]
+}
+```
+
+## What is the difference between Indent and MarshalIndent
+
+**MarshalIndent will turn your existing object into a JSON object and indent it. Indent on the other hand will not will make a JSON transformation.**
+That means if you only want to pretty print a byte array you should use json.Indent.
+
+Pretty printing JSON in go (golang) is really not that difficult.
+If you want to read more on how to use the print function in go, printing structs in particular, you should check out [this article](https://www.go-code.dev/blog/go/print/how-to-print-a-struct-in-go).

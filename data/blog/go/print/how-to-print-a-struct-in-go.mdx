@@ -101,8 +101,8 @@ import (
 
 func main() {
 	type MyStruct struct {
-		Id   int
-		Data []string
+		Id   int	`json:"Id"`
+		Data []string	`json:"Data"`
 	}
 
 	myStruct := MyStruct{
