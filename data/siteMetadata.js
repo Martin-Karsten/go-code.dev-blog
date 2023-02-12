@@ -20,7 +20,7 @@ const siteMetadata = {
   analytics: {
     // If you want to use an analytics provider you have to add it to the
     // content security policy in the `next.config.js` file.
-    isVercelAnalyticsActive: false,
+    isVercelAnalyticsActive: true,
     googleAnalyticsId: 'G-YJSLKWE687', // e.g. UA-000000-2 or G-XXXXXXX
   },
   newsletter: {
