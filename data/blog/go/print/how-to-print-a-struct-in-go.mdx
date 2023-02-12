@@ -1,24 +1,27 @@
 ---
-title: How to print a struct go (golang)
+title: How to print a struct in go (golang)
 date: '2023-02-12'
 tags: ['go', 'print', 'struct']
 draft: false
-summary: 'How to print a struct go (golang)'
+summary: 'How to print a struct in go (golang)'
 ---
 
 <Image
-  alt="How to print a struct go (golang)"
+  alt="How to print a struct in go (golang)"
   src="/static/images/go/Go-Logo_Aqua.png"
   width={256}
   height={128}
   style={{ margin: '0 auto' }}
 />
 
+The question of how to print a struct in go (golang) can be quite tricky for new gophers.
+Often the data will just not appear in your console. For that reason, we will explore how it is done the right way in this post.
+
 ## Print a struct in your console in go (golang)
 
 **Use the fmt.Printf package and add the flag (%+v). This flag adds field names**
 
-### Code example on how to print a struct in go (golang)
+### Code example of printing a struct in go (golang)
 
 ```go
 import (
@@ -49,7 +52,7 @@ When printing you will get the following result in your console:
 
 **Use the fmt.Printf package and add the flag (%+v). This flag adds field names**
 
-### Code example on how to print a struct in go (golang)
+### Code example on printing a struct in go (golang)
 
 ```go
 import (
@@ -91,7 +94,7 @@ When printing you will get the following result in your console:
 
 **Use the encoding/json package to json.Marshal the struct and print the string**
 
-### Code example on how to print a JSON struct using json.Marshal
+### Code example of printing a JSON object using json.Marshal
 
 ```go
 import (
@@ -114,11 +117,13 @@ func main() {
 }
 ```
 
-When printing you will get the following result in your console:
+And again, when printing you will get the following result in your console:
 
 `{"Id":1,"Data":["Cat","Dog","Horse"]}`
 
 Conclusion:
 
-Printing a struct in go (golang) is quiet easy. Simiply adding the flag (%+v) to your print statment will add the struct fields.
+Printing a struct in go (golang) is quite easy. Simply adding the flag (%+v) to your print statement will add the struct fields.
 For JSON structs we only have to marshal the object and print the generated string.
+
+If you want to know how to pretty print JSON in go (golang), check out [this post](https://www.go-code.dev/blog/go/print/how-to-print-a-struct-in-go).
