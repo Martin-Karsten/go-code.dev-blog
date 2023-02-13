@@ -3,7 +3,7 @@ title: How to print a struct in go (golang)
 date: '2023-02-12'
 tags: ['go', 'print', 'struct']
 draft: false
-summary: 'How to print a struct in go (golang)'
+summary: 'The fmt.Printf method will print and format a struct.'
 ---
 
 <Image
@@ -35,7 +35,7 @@ type MyStruct struct {
     Data    Data
 }
 
-myStruct := {
+myStruct := MyStruct{
 	Id:    1,
 	Title: "My Title",
 	Name:  "My Name",
@@ -44,6 +44,7 @@ myStruct := {
 fmt.Printf("%+v\n", myStruct)
 ```
 
+All we have to do is to add [%+v]() to our print function.
 When printing you will get the following result in your console:
 
 `result: {Id:1 Title:My Title Name:My Name}`
@@ -86,6 +87,8 @@ import (
 fmt.Printf("%+v\n", myStruct)
 ```
 
+The same logic applies to nested structs. No denesting is necessary. Go's print function in combination with
+the [%+v\]() string will do the denesting in the console for us.
 When printing you will get the following result in your console:
 
 `result: {Id:1 Title:My Title Name:My Name Data:{OtherId:2 OtherTitle:Other Title OtherName:Other Name}}`

@@ -2,7 +2,7 @@ const siteMetadata = {
   title: 'go-code.dev',
   author: 'Martin Karsten',
   headerTitle: 'go-code.dev',
-  description: 'A blog created with Next.js and Tailwind.css',
+  description: 'A blog about everything programming. Mostly go for now',
   language: 'en-us',
   theme: 'system', // system, dark or light
   siteUrl: 'https://go-code.dev',
