@@ -1,0 +1,64 @@
+---
+title: Print Formatting in go (golang)
+date: '2023-02-12'
+tags: ['golang', 'print']
+draft: false
+summary: 'The fmt.Printf method will print and format a struct.'
+---
+
+If you come from other programming languages like JavaScript, the concept of having to add percentage signs when printing values might seem foreign to you.
+But in other programming languages, you often have to add a percentage sign followed by a letter. That is also how Print Formatting works in go (golang)
+
+**The symbol we use in every format specifier is %. Followed by letter with specific letter**
+
+## Format Ppecifiers in C
+
+The concept of Format specifiers comes from the C programming language. Format specifiers in C are used to take inputs and print the output of its type.
+The symbol we use in every format specifier is %.
+Format specifiers tell the compiler about the type of data given or input and the type of data that must be printed in the console.
+
+## Format Ppecifiers in go (golang)
+
+Go uses almost the same format specifiers as C but slightly simplifies them.
+
+Here are a few examples
+
+_General_
+SPECIFIER | PURPOSE |
+--- | --- |
+%v | the value in a default format
+%#v | a Go-syntax representation of the value
+%T | a Go-syntax representation of the type of the value
+%% | a literal percent sign; consumes no value
+
+_Integer_
+SPECIFIER | PURPOSE |
+--- | --- |
+%b | base 2
+%c | the character represented by the corresponding Unicode code point
+%d | base 10
+%o | base 8
+%O | base 8 with 0o prefix
+%q | a single-quoted character literal safely escaped with Go syntax.
+%x | base 16, with lower-case letters for a-f
+%X | base 16, with upper-case letters for A-F
+%U | Unicode format: U+1234; same as "U+%04X"
+
+_String_
+SPECIFIER | PURPOSE |
+--- | --- |
+%s | the uninterpreted bytes of the string or slice
+%q | a double-quoted string safely escaped with Go syntax
+%x | base 16, lower-case, two characters per byte
+%X | base 16, upper-case, two characters per byte
+
+_Default formator for %v_
+SPECIFIER | PURPOSE |
+--- | --- |
+bool | %t
+int, int8 etc. | %d
+uint, uint8 etc. | %d, %#x if printed with %#v
+float32, complex64, etc | %g
+string | %s
+chan | %p
+pointer | %p
