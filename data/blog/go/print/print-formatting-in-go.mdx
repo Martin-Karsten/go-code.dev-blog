@@ -3,7 +3,7 @@ title: Print Formatting in go (golang)
 date: '2023-02-12'
 tags: ['golang', 'print']
 draft: false
-summary: 'The fmt.Printf method will print and format a struct.'
+summary: 'Use the % sign followed by a letter to print output'
 ---
 
 If you come from other programming languages like JavaScript, the concept of having to add percentage signs when printing values might seem foreign to you.
@@ -62,3 +62,21 @@ float32, complex64, etc | %g
 string | %s
 chan | %p
 pointer | %p
+
+Example: %T will print the type of a variable
+
+```go
+import (
+	"fmt"
+)
+
+func main() {
+	num := 1
+
+	fmt.Printf("The variable num is of type %T \n", num)
+}
+```
+
+```
+The variable num is of type int
+```
