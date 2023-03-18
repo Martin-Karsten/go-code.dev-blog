@@ -1,0 +1,121 @@
+---
+title: How to Implement Promise.all
+date: '2023-02-22'
+tags: ['javascript', 'promise', recursion]
+draft: false
+summary: 'Promise.all can be implemented recursivly, iteravly and using the reduce function'
+---
+
+## The Promise.all Function
+
+Promise.all is a built-in takes an array of promises as input and returns a new promise
+that resolves to an array of the resolved values of each promise,in the same order as the input promises.
+
+The big advantage of using Promise.all is that Promises can be executed in parallel and don't block each other.
+
+```javascript
+  Promise.all([
+    fetch('/api/a'),
+    fetch('/api/b'),
+    fetch('/api/c')
+  ]).then([responseA, responseB, responseC] => {
+    /// ...
+  });
+```
+
+## Using Recursion
+
+```javascript
+Promise.all = async function promiseAllRecursive(values) {
+  if (values.length === 0) return Promise.resolve([])
+
+  const [first, ...rest] = values
+
+  // ensures that first is a promise
+  const firstResult = await Promise.resolve(first)
+  const restResults = await promiseAllRecursive(rest)
+
+  return [firstResult, ...restResults]
+}
+```
+
+How does the fuction above work? 0. argument values: Array of Promises and non Promises
+
+1.  Base Case `if (values.length === 0)`
+
+- we return a Promise that resolves with an empty array
+
+2.  We create to variables
+
+- `first` : The first value of the array
+- `rest` : An array with all the values of the array, except the first often
+
+3.  `firstResult`: we await for the first value to resolve
+
+- `Promise.resolve(first)` ensures that the value is a Promise
+- if values was an array only Promises, const `firstResult = await first` would be enough
+
+4. `restResults`: calls `promiseAllRecursive` recursivly
+
+- reduces the array to the point where the base case 1. is met
+
+5. we return an array with the first resolved value and the rest of resolved values
+
+- becase this is an async function, the array implicitly is retunred as a Promise which resolves to the array
+
+### Recrusive Solution with Error Handling
+
+```javascript
+async function promiseAllRecursiveWithErrorHandling(values) {
+  if (!Array.isArray(values)) {
+    return Promise.reject(new TypeError('Argument must be an array'))
+  }
+
+  if (values.length === 0) {
+    return Promise.resolve([])
+  }
+
+  try {
+    const [first, ...rest] = values
+
+    const firstResult = await Promise.resolve(first)
+    const restResults = await promiseAllRecursive(rest)
+
+    return [firstResult, ...restResults]
+  } catch (error) {
+    return Promise.reject(error)
+  }
+}
+```
+
+## Iterative Solution
+
+```javascript
+async function promiseAllIterative(values) {
+  let results = []
+  for (let value of values) {
+    try {
+      let result = await Promise.resolve(value)
+      results.push(result)
+    } catch (error) {
+      throw error
+    }
+  }
+  return results
+}
+```
+
+## Solution using Array.reduce
+
+```javascript
+function promiseAllReduce(values) {
+  return values.reduce(async (results, value) => {
+    const prevResults = results
+    const result = await Promise.resolve(value)
+
+    return [...prevResults, result]
+  }, Promise.resolve([]))
+}
+```
+
+All of the implements above will lead to the same outcome.
