@@ -1,0 +1,97 @@
+---
+title: How to Implement a Simple Clock in Javascript
+date: '2023-02-22'
+tags: ['javascript', 'promise', recursion]
+draft: true
+summary: 'Promise.all can be implemented recursivly, iteravly and using the reduce function'
+---
+
+Hour hand: The number of hours since the start of the day is multiplied by 30,
+which gives the number of degrees that the hour hand should rotate.
+This is because there are 12 hours on a clock face,
+and 360 degrees divided by 12 hours equals 30 degrees per hour.
+However, this calculation assumes that the hour hand moves smoothly between the hour marks on the clock face,
+which is not the case in reality. To get a more accurate representation of the hour hand position,
+you would need to take into account the number of minutes past the hour as well,
+since the hour hand moves slightly between each hour mark.
+
+Minute hand: The number of minutes since the start of the hour is multiplied by 6,
+which gives the number of degrees that the minute hand should rotate.
+This is because there are 60 minutes in an hour,
+and 360 degrees divided by 60 minutes equals 6 degrees per minute.
+
+Second hand: The number of seconds since the start of the minute is multiplied by 6,
+which gives the number of degrees that the second hand should rotate.
+This is because there are 60 seconds in a minute,
+and 360 degrees divided by 60 seconds equals 6 degrees per second.
+
+```javascript
+function setTime() {
+  const now = new Date()
+  const hour = now.getHours()
+  const minute = now.getMinutes()
+  const second = now.getSeconds()
+
+  const hourEl = document.querySelector('.hour')
+  const minuteEl = document.querySelector('.minute')
+  const secondEl = document.querySelector('.second')
+
+  hourEl.style.transform = `rotate(${hour * 30}deg)`
+  minuteEl.style.transform = `rotate(${minute * 6}deg)`
+  secondEl.style.transform = `rotate(${second * 6}deg)`
+}
+
+setInterval(setTime, 1000)
+```
+
+## using requestAnimationFrame
+
+The first part of the formula, ((hours % 12) / 12) \* 360, calculates the angle for the hour value.
+It uses the modulo operator % to ensure that the hour value is between
+0 and 11 (since the clock is a 12-hour clock), and then divides it by 12 to get a fraction
+between 0 and 1, which is then multiplied by 360 to convert it to degrees.
+
+The second part of the formula, (minutes / 60) \* 30,
+calculates the additional angle for the minute value.
+Since the hour hand moves gradually between the hour values,
+the minute value needs to be added to the hour angle to get the correct position for the hour hand.
+This part of the formula calculates the additional angle based on the current minute value.
+It converts the minute value to a fraction between 0 and 1 by dividing it by 60,
+then multiplies it by 30 to get the corresponding angle in degrees.
+
+The minuteAngle and secondAngle variables are calculated in a similar way,
+based on the current minute and second values.
+The minuteAngle is simply calculated as (minutes / 60) _ 360,
+since the minute hand moves continuously around the clock face.
+The secondAngle is calculated as (seconds / 60) _ 360,
+since the second hand also moves continuously around the clock face.
+
+```javascript
+function updateTime() {
+  const now = new Date()
+
+  const hours = now.getHours()
+  const minutes = now.getMinutes()
+  const seconds = now.getSeconds()
+
+  const hourHand = document.querySelector('.hour')
+  const minuteHand = document.querySelector('.minute')
+  const secondHand = document.querySelector('.second')
+
+  const hourAngle = ((hours % 12) / 12) * 360 + (minutes / 60) * 30
+  const minuteAngle = (minutes / 60) * 360
+  const secondAngle = (seconds / 60) * 360
+
+  function animateClock() {
+    hourHand.style.transform = `rotate(${hourAngle}deg)`
+    minuteHand.style.transform = `rotate(${minuteAngle}deg)`
+    secondHand.style.transform = `rotate(${secondAngle}deg)`
+
+    window.requestAnimationFrame(animateClock)
+  }
+
+  window.requestAnimationFrame(animateClock)
+}
+
+setInterval(updateTime, 1000)
+```

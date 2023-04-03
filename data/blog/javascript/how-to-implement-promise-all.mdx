@@ -39,9 +39,11 @@ Promise.all = async function promiseAllRecursive(values) {
 }
 ```
 
-How does the fuction above work? 0. argument values: Array of Promises and non Promises
+How does the fuction above work?
 
-1.  Base Case `if (values.length === 0)`
+0. argument values: Array of Promises and non Promises
+
+1. Base Case `if (values.length === 0)`
 
 - we return a Promise that resolves with an empty array
 

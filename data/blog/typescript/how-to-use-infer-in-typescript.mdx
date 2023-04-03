@@ -1,0 +1,60 @@
+---
+title: How to use the infer keyword in Typescript
+date: '2023-03-02'
+tags: ['typescript']
+draft: false
+summary: 'In TypeScript, the infer keyword is used within the scope of a conditional type to infer a type based on the input type'
+---
+
+## What is the infer keyword
+
+**In TypeScript, the infer keyword is used within the scope of a conditional type to infer a type based on the input type.** It allows you to define a type variable that represents the type you want to infer.
+Typically infer is used with the `extends` clause in a condition type.
+In other words: We check that the return type of a Function is of the type we defined.
+
+Here is an example
+
+```typescript
+type ReturnTypeOfFunction<T> = T extends (...args: any) => infer R ? R : never
+```
+
+How does this code work?
+
+1. `T extends (...args: any[]) => infer R`: This part checks whether the type `T` extends a function type with any number of arguments of any type `(...args: any[])`.
+   If so, it will infer the return type of the function and assign it to the type variable `R`.
+2. `? R : never`: This is a ternary conditional type operator. If the condition `T extends (...args: any[]) => infer R` is true (i.e., T is a function type),
+   the ReturnTypeOfFunction type will be equal to the inferred return type R. If the condition is false (i.e., T is not a function type), the ReturnTypeOfFunction type will be equal to the `never` type.
+
+```typescript
+type ReturnTypeOfFunction<T> = T extends (...args: any) => infer R ? R : never
+
+const func = (s: string) => s.length
+const rt: ReturnTypeOfFunction<typeof func> = 1000
+```
+
+In the example above, func is function that takes a string as a argument. That satisifies the `T extends (...args: any[])` condition. Meaning it should be a function that can take any arguments.
+`infer R ?` is true, meaning a function that takes any arguments, so we return the return type of the function. Which is a number (s.length)
+
+Let's look another example
+
+```typescript
+type DiffReturnTypeOfFunction<T> = T extends (args: string) => infer R ? true : false
+
+const func = (s: string) => s.length
+const func2 = (n: number) => n.toString()
+
+const rt: DiffReturnTypeOfFunction<typeof func> = true
+
+const FalsyReturnType: DiffReturnTypeOfFunction<typeof func2> = false
+```
+
+1. In the example above `T extends (args: string)` states that our function takes an argument that must of type string.
+   `const func = (s: string) => s.length` is a function that takes a string as an argument.
+2. That's why it is possible for use to assign `const rt: DiffReturnTypeOfFunction<typeof func> = true` to true.
+3. The second function `const func2 = (n: number) => n.toString()` takes a number as an argument. That's why we can only assign false
+   `const FalsyReturnType: DiffReturnTypeOfFunction<typeof func2> = false`
+
+## Summary:
+
+Using infer is not that difficult, once you understand what is actually used for.
+We always use it with a ternary operator and infer the type based on the input type
