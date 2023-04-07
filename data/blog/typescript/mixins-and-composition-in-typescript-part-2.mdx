@@ -1,0 +1,73 @@
+---
+title: Mixins and Composition in Typescript Part 2
+date: '2023-03-23'
+tags: ['typescript', 'composition']
+draft: false
+summary: 'Composition with Interfaces in Typescript'
+---
+
+<Image
+  alt="Composition with Interfaces in Typescript"
+  src="/static/images/typescript/ts-lettermark-blue.png"
+  width={256}
+  height={128}
+  style={{ margin: '0 auto' }}
+/>
+
+Let's look out how to use composition with interfaces in Typescript. In [Part 1](https://www.go-code.dev/blog/typescript/mixins-and-composition-in-typescript-part-1)
+we learned how to use Mixins to achieve code reusablity. In Part 2 we will look at how to achieve the same result. But instead
+of mixins, we will use composition with interfaces.
+
+## Composition with Interfaces
+
+We define two interfaces
+
+```typescript
+interface CanFly {
+  fly(): void
+}
+
+interface CanSwim {
+  swim(): void
+}
+```
+
+Next we implement two classes that implement these Interfaces
+
+```typescript
+class FlyingAbility implements CanFly {
+  fly() {
+    console.log('I can fly!')
+  }
+}
+
+class SwimmingAbility implements CanSwim {
+  swim() {
+    console.log('I can swim!')
+  }
+}
+```
+
+Laslty we create a Duck class that implements the previously created interfaces.
+
+```typescript
+class Duck implements CanFly, CanSwim {
+  private flyingAbility: CanFly = new FlyingAbility()
+  private swimmingAbility: CanSwim = new SwimmingAbility()
+
+  fly() {
+    this.flyingAbility.fly()
+  }
+
+  swim() {
+    this.swimmingAbility.swim()
+  }
+}
+
+const duck = new Duck()
+duck.fly() // Output: I can fly!
+duck.swim() // Output: I can swim!
+```
+
+We achieved the same result as in [Part 1](https://www.go-code.dev/blog/typescript/mixins-and-composition-in-typescript-part-1).
+But instead of a mixin we used composition with interfaces.

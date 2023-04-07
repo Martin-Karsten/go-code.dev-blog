@@ -1,0 +1,83 @@
+---
+title: Mixins and Composition in Typescript Part 1
+date: '2023-03-22'
+tags: ['typescript', 'composition']
+draft: false
+summary: 'Create a mixin function in Typescript'
+---
+
+<Image
+  alt="Mixins in TypeScript"
+  src="/static/images/typescript/ts-lettermark-blue.png"
+  width={256}
+  height={128}
+  style={{ margin: '0 auto' }}
+/>
+
+## What is a Mixin?
+
+A mixin is a design pattern that allows you to add methods or properties from one `class` or `object` to another,
+enabling code reusablity.
+Mixins can be thought of as a way to achieve [multiple inheritance](https://en.wikipedia.org/wiki/Multiple_inheritance#:~:text=Multiple%20inheritance%20is%20a%20feature,one%20particular%20object%20or%20class.)
+in languages, that don't natively support it.
+Instead of inheriting methods and properties through a class hierarchy,
+mixins allow you to "mix in" or compose the desired behaviors into a class or object.
+
+Let's look at an example
+
+## Using Mixins
+
+First we implement two different classes with different behaviours
+
+```typescript
+// Define two interfaces representing two different behaviors
+interface CanFly {
+  fly(): void
+}
+
+interface CanSwim {
+  swim(): void
+}
+
+// Implement the behaviors in separate classes
+class Flying implements CanFly {
+  fly() {
+    console.log('I can fly!')
+  }
+}
+
+class Swimming implements CanSwim {
+  swim() {
+    console.log('I can swim!')
+  }
+}
+```
+
+Now we implement a mixin creator
+
+```typescript
+function applyMixins(derivedConstructur: any, baseConstructors: any[]) {
+  baseConstructors.forEach((baseCtor) => {
+    Object.getOwnPropertyNames(baseCtor.prototype).forEach((name) => {
+      if (name !== 'constructor') {
+        derivedCtor.prototype[name] = baseCtor.prototype[name]
+      }
+    })
+  })
+}
+```
+
+Lastly we create a Duck class and apply the mixins
+
+```typescript
+class Duck {}
+
+applyMixins(Duck, [Flying, Swimming])
+
+const duck = new Duck()
+;(duck as Duck & CanFly & CanSwim).fly() // Output: I can fly!
+;(duck as Duck & CanFly & CanSwim).swim() // Output: I can swim!
+```
+
+Using mixins allows us to use functionality from multiple classes in a single class. In [Part 2]() we will
+look at another way to achieve the same result using Composition with Interfaces.
