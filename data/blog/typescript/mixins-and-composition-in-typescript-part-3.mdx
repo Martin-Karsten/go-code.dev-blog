@@ -1,0 +1,69 @@
+---
+title: Mixins and Composition in Typescript Part 3
+date: '2023-04-02'
+tags: ['typescript', 'composition']
+draft: false
+summary: 'Higher Order Functions to Achieve Reusability'
+---
+
+<Image
+  alt="Higher Order Functions to Achieve Reusability"
+  src="/static/images/typescript/ts-lettermark-blue.png"
+  width={256}
+  height={128}
+  style={{ margin: '0 auto' }}
+/>
+
+Let's look out how to use [higher order functions](https://medium.com/javascript-scene/higher-order-functions-composing-software-5365cf2cbe99#:~:text=A%20higher%20order%20function%20is,return%20a%20function%20as%20output) to achieve reusablity. In [Part 1](https://www.go-code.dev/blog/typescript/mixins-and-composition-in-typescript-part-1)
+we learned how to use Mixins to achieve code reusablity. In [Part 2](https://www.go-code.dev/blog/typescript/mixins-and-composition-in-typescript-part-2)
+we used composition to achieve reusablity. In Part 3 we will use higher order functions to achieve reusablity.
+
+## Higher order Functions
+
+We define two interfaces
+
+```typescript
+interface CanFly {
+  fly(): void
+}
+
+interface CanSwim {
+  swim(): void
+}
+```
+
+Next we implement two higher order functions. In the previous parts we used interfaces instead
+
+```typescript
+function fly() {
+  console.log('I can fly!')
+}
+
+function swim() {
+  console.log('I can swim!')
+}
+```
+
+Now, we create a higher-order function that takes an object and a set of methods to be added to that object:
+
+```typescript
+function withMethods<T extends object, M extends object>(base: T, methods: M): T & M {
+  return Object.assign(base, methods)
+}
+```
+
+Laslty we create a Duck class that will call `fly` and `swim`
+
+```typescript
+class Duck {}
+
+const duck = withMethods(new Duck(), { fly, swim })
+
+duck.fly() // Output: I can fly!
+duck.swim() // Output: I can swim!
+```
+
+## Conclusion
+
+Reusability is achievable with different approaches. Mixins, Composition or higher order functions are just a few
+possibilities.
