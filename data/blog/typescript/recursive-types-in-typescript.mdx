@@ -1,0 +1,112 @@
+---
+title: Recursive Types in Typescript
+date: '2023-05-12'
+tags: ['typescript', 'recursion']
+draft: false
+summary: 'Typescript allows for recursively defining types'
+---
+
+<Image
+  alt="Recursive Types in Typescript"
+  src="/static/images/typescript/ts-lettermark-blue.png"
+  width={256}
+  height={128}
+  style={{ margin: '0 auto' }}
+/>
+
+## Why would you need recursive types?
+
+Recursive types are primarily used to model data structures with a self-referential,
+hierarchical, or recursive nature. Without recursive types,
+it would be challenging to model these kinds of data structures in a type-safe way.
+Further, Recursive types allow you to accurately describe the data structure in your program,
+which can help prevent bugs and make your code easier to understand.
+
+### Recursive Types in Trees
+
+In a tree structure, each node can have children, and each child is a node itself.
+As such, trees are inherently recursive. They are very common and used in many algorithms and data structures,
+such as:
+
+- binary trees
+- syntax trees
+- the Document Object Model (DOM) in web development
+
+This is how you can possibly define a TreeNode interface (or type) in Typescript.
+Notice how the properties left and right are referencing the TreeNode interface itself
+
+```typescript
+interface TreeNode {
+  value: number
+  left?: TreeNode
+  right?: TreeNode
+}
+```
+
+And it can be used like this
+
+```typescript
+let tree: TreeNode = {
+  value: 1,
+  left: {
+    value: 2,
+    left: {
+      value: 4,
+    },
+    right: {
+      value: 5,
+    },
+  },
+  right: {
+    value: 3,
+  },
+}
+```
+
+### Traversing a Tree recursively
+
+Another approach would be to add all of the children to the TreeNode interface
+
+```typescript
+interface TreeNode {
+  value: number
+  children: TreeNode[]
+}
+
+let tree: TreeNode = {
+  value: 1,
+  children: [
+    {
+      value: 2,
+      children: [],
+    },
+    {
+      value: 3,
+      children: [
+        {
+          value: 4,
+          children: [],
+        },
+      ],
+    },
+  ],
+}
+```
+
+In this case `children: TreeNode[]` will contain all it's children TreeNodes
+
+**Now we can create a traverse function, go trough all the nodes recursively and type them corrctly at the same time.**
+
+```typescript
+function traverse(node: TreeNode) {
+  console.log(node.value)
+  node.children.forEach((child) => traverse(child))
+}
+
+traverse(tree) // Logs: 1, 2, 3, 4
+```
+
+### Summary
+
+Recursive Types in Typescript always reference themselves and come in handy when dealing with recursion.
+If you are interested on how to use recursion, check out this [article](https://www.go-code.dev/blog/javascript/how-to-implement-promise-all) where we use recursion to implement Javascript's Promise.all

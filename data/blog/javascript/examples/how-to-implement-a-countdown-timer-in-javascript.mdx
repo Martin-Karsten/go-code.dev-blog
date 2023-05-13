@@ -1,0 +1,105 @@
+---
+title: How to Implement a Countdown Timer in Javascript
+date: '2023-02-22'
+tags: ['javascript']
+draft: true
+summary: 'Implement a Countdown Timer in Javascript'
+---
+
+```javascript
+function formatTime(seconds) {
+  let minutes = Math.floor(seconds / 60)
+  let remainingSeconds = seconds % 60
+
+  return `${String(minutes).padStart(2, '0')}:${String(remainingSeconds).padStart(2, '0')}`
+}
+
+let countdownTimer
+let countdownElement = document.getElementById('countdown')
+
+function startCountdown() {
+  let timeRemaining = parseInt(countdownElement.getAttribute('data-remaining'))
+  timeRemaining -= 1 // Decrease the time remaining by 1 second
+  countdownElement.setAttribute('data-remaining', timeRemaining)
+  countdownElement.textContent = formatTime(timeRemaining)
+
+  if (timeRemaining <= 0) {
+    clearInterval(countdownTimer)
+    countdownElement.textContent = "Time's up!"
+  }
+}
+
+function initCountdown(seconds) {
+  countdownElement.setAttribute('data-remaining', seconds)
+  countdownElement.textContent = formatTime(seconds)
+  countdownTimer = setInterval(startCountdown, 1000) // Update the timer every 1 second (1000 milliseconds)
+}
+
+initCountdown(61) // Initialize the countdown timer with a custom number of seconds (e.g., 90 seconds)
+```
+
+```html
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Countdown Timer</title>
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 100vh;
+        margin: 0;
+        background-color: #f0f0f0;
+      }
+
+      #countdown {
+        font-size: 3rem;
+        font-weight: bold;
+      }
+    </style>
+  </head>
+  <body>
+    <h1 id="countdown">00:00:000</h1>
+    <script>
+      function formatTime(milliseconds) {
+        let seconds = Math.floor(milliseconds / 1000)
+        let minutes = Math.floor(seconds / 60)
+        let remainingSeconds = seconds % 60
+        let remainingMilliseconds = milliseconds % 1000
+
+        return `${String(minutes).padStart(2, '0')}:${String(remainingSeconds).padStart(
+          2,
+          '0'
+        )}:${String(remainingMilliseconds).padStart(3, '0')}`
+      }
+
+      let countdownTimer
+      let countdownElement = document.getElementById('countdown')
+
+      function startCountdown() {
+        let timeRemaining = parseInt(countdownElement.getAttribute('data-remaining'))
+        timeRemaining -= 10 // Decrease the time remaining by 10 milliseconds
+        countdownElement.setAttribute('data-remaining', timeRemaining)
+        countdownElement.textContent = formatTime(timeRemaining)
+
+        if (timeRemaining <= 0) {
+          clearInterval(countdownTimer)
+          countdownElement.textContent = "Time's up!"
+        }
+      }
+
+      function initCountdown(milliseconds) {
+        countdownElement.setAttribute('data-remaining', milliseconds)
+        countdownElement.textContent = formatTime(milliseconds)
+        countdownTimer = setInterval(startCountdown, 10) // Update the timer every 10 milliseconds
+      }
+
+      initCountdown(90000) // Initialize the countdown timer with a custom number of milliseconds (e.g., 90,000 milliseconds or 90 seconds)
+    </script>
+  </body>
+</html>
+```
